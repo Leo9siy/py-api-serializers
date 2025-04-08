@@ -40,7 +40,7 @@ class Movie(models.Model):
     description = models.TextField()
     duration = models.IntegerField()
     genres = models.ManyToManyField(Genre, related_name="movie_genres")
-    actors = models.ManyToManyField(Actor)
+    actors = models.ManyToManyField(Actor, related_name="movie_actors")
 
     class Meta:
         ordering = ["title"]
@@ -65,7 +65,8 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="user_orders",
     )
 
     def __str__(self):
@@ -77,12 +78,14 @@ class Order(models.Model):
 
 class Ticket(models.Model):
     movie_session = models.ForeignKey(
-        MovieSession, on_delete=models.CASCADE, related_name="tickets"
+        MovieSession,
+        on_delete=models.CASCADE,
+        related_name="movie_session_tickets"
     )
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
-        related_name="tickets"
+        related_name="order_tickets"
     )
     row = models.IntegerField()
     seat = models.IntegerField()
